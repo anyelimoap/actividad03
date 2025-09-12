@@ -3,242 +3,220 @@
 #include <string>
 #include <vector>
 #include <cctype>
-using namespace std;
 
-// ------------------- TOKENIZADOR -------------------
-bool esSimbolo(char c) {
-    return c == ';' || c == '(' || c == ')' ||
-           c == '{' || c == '}' || c == '+' ||
-           c == '-' || c == '*' || c == '/' ||
-           c == '=' || c == '<' || c == '>' ||
-           c == '!';
+struct Token {
+    std::string valor;
+    std::string tipo;
+};
+
+// Palabras clave
+std::string tipos[] = {"int", "float", "char"};
+std::string reservadas[] = {"if", "else"};
+
+// -------------------------------
+// Clasificación de caracteres
+// -------------------------------
+bool esSeparador(char c) {
+    return c == ';' || c == '(' || c == ')' || c == '{' || c == '}';
 }
 
-vector<string> tokenizar(const string &nombreArchivo) {
-    ifstream archivo(nombreArchivo);
-    vector<string> tokens;
+bool esOperador(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/' ||
+           c == '=' || c == '<' || c == '>' || c == '!';
+}
+
+// -------------------------------
+// Clasificación de tokens
+// -------------------------------
+std::string clasificarToken(const std::string &token) {
+    if (token.empty()) return "";
+
+    // tipo
+    for (size_t i = 0; i < sizeof(tipos)/sizeof(tipos[0]); i++) {
+        if (token == tipos[i]) return "TIPO";
+    }
+
+    // palabras reservadas
+    for (size_t i = 0; i < sizeof(reservadas)/sizeof(reservadas[0]); i++) {
+        if (token == reservadas[i]) return "RESERVADA";
+    }
+
+    // número
+    bool esNumero = true;
+    for (size_t i = 0; i < token.size(); i++) {
+        if (!isdigit(token[i])) { esNumero = false; break; }
+    }
+    if (esNumero) return "EXPR";
+
+    // operador (relop + aritméticos juntos)
+    if (token == "=" || token == "+" || token == "-" || token == "*" || token == "/" ||
+        token == "<" || token == ">" || token == "==" || token == "!=") {
+        return "RELOP";
+    }
+
+    // identificador
+    if (isalpha(token[0])) {
+        bool valido = true;
+        for (size_t i = 1; i < token.size(); i++) {
+            if (!isalnum(token[i])) { valido = false; break; }
+        }
+        if (valido) return "EXPR";
+    }
+
+    return "DESCONOCIDO";
+}
+
+// -------------------------------
+// Imprimir tokens en formato gramática
+// -------------------------------
+void imprimirToken(const Token &tok) {
+    if (tok.tipo == "EXPR") {
+        std::cout << "expr -> " << tok.valor << std::endl;
+    }
+    else if (tok.tipo == "RELOP") {
+        std::cout << "relop -> " << tok.valor << std::endl;
+    }
+    else if (tok.tipo == "TIPO") {
+        std::cout << "tipo -> " << tok.valor << std::endl;
+    }
+    else if (tok.tipo == "RESERVADA") {
+        std::cout << "PALABRA RESERVADA -> " << tok.valor << std::endl;
+    }
+    else if (tok.tipo == "SEPARADOR") {
+        std::cout << "separador -> " << tok.valor << std::endl;
+    }
+    else {
+        std::cout << tok.tipo << " -> " << tok.valor << std::endl;
+    }
+}
+
+// -------------------------------
+// Verificar estructura IF (múltiples if)
+// -------------------------------
+bool verificarIf(const std::vector<Token> &tokens, size_t &i) {
+    if (i >= tokens.size() || tokens[i].valor != "if") return false;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].valor != "(") return false;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].tipo != "EXPR") return false;
+    std::string expr1 = tokens[i].valor;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].tipo != "RELOP") return false;
+    std::string relop = tokens[i].valor;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].tipo != "EXPR") return false;
+    std::string expr2 = tokens[i].valor;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].valor != ")") return false;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].valor != "{") return false;
+    while (i < tokens.size() && tokens[i].valor != "}") { i++; }
+    if (i >= tokens.size() || tokens[i].valor != "}") return false;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].valor != "else") return false;
+    i++;
+
+    if (i >= tokens.size() || tokens[i].valor != "{") return false;
+    while (i < tokens.size() && tokens[i].valor != "}") { i++; }
+    if (i >= tokens.size() || tokens[i].valor != "}") return false;
+    i++;
+
+    // Imprimir la condición según la gramática
+    std::cout << "\nIF -> if (COND) { INSTRUCCIONES } else { INSTRUCCIONES }" << std::endl;
+    std::cout << "COND -> expr relop expr" << std::endl;
+    std::cout << "expr -> " << expr1 << std::endl;
+    std::cout << "relop -> " << relop << std::endl;
+    std::cout << "expr -> " << expr2 << std::endl;
+
+    return true;
+}
+
+// -------------------------------
+// Main
+// -------------------------------
+int main() {
+    std::ifstream archivo("archivo.txt"); 
     if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo." << endl;
-        return tokens;
+        std::cerr << "No se pudo abrir el archivo." << std::endl;
+        return 1;
     }
 
     char c;
-    string palabra = "";
+    std::string palabra = "";
+    std::vector<Token> tokens;
+
     while (archivo.get(c)) {
         if (c == '\n' || c == '\r') continue;
 
         if (isspace(c)) {
             if (!palabra.empty()) {
-                tokens.push_back(palabra);
+                tokens.push_back({palabra, clasificarToken(palabra)});
                 palabra.clear();
             }
         }
-        else if (esSimbolo(c)) {
+        else if (esSeparador(c)) {
             if (!palabra.empty()) {
-                tokens.push_back(palabra);
+                tokens.push_back({palabra, clasificarToken(palabra)});
                 palabra.clear();
             }
-            if ((c == '=' || c == '!' || c == '<' || c == '>') && archivo.peek() == '=') {
-                char next;
-                archivo.get(next);
-                string op;
-                op += c;
-                op += next;
-                tokens.push_back(op);
+            std::string sep(1, c);
+            tokens.push_back({sep, "SEPARADOR"});
+        }
+        else if (esOperador(c)) {
+            if (!palabra.empty()) {
+                tokens.push_back({palabra, clasificarToken(palabra)});
+                palabra.clear();
+            }
+            char siguiente;
+            if (archivo.peek() == '=' && (c == '=' || c == '!' || c == '<' || c == '>')) {
+                archivo.get(siguiente);
+                std::string op; op += c; op += siguiente;
+                tokens.push_back({op, clasificarToken(op)});
             } else {
-                tokens.push_back(string(1, c));
+                std::string op(1, c);
+                tokens.push_back({op, clasificarToken(op)});
             }
         }
         else {
             palabra += c;
         }
     }
-    if (!palabra.empty()) tokens.push_back(palabra);
-
+    if (!palabra.empty()) {
+        tokens.push_back({palabra, clasificarToken(palabra)});
+    }
     archivo.close();
-    return tokens;
-}
 
-// ------------------- VALIDADORES -------------------
-bool esTipo(const string &tok) {
-    return tok == "int" || tok == "float" || tok == "char";
-}
-
-bool esLetra(char c) {
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-}
-
-bool esDigito(char c) {
-    return (c >= '0' && c <= '9');
-}
-
-bool esID(const string &tok) {
-    if (tok.empty()) return false;
-    if (!esLetra(tok[0])) return false;
-    for (size_t j = 1; j < tok.size(); j++) {
-        if (!(esLetra(tok[j]) || esDigito(tok[j]))) return false;
+    // Mostrar tokens en formato de gramática
+    for (size_t i = 0; i < tokens.size(); i++) {
+        imprimirToken(tokens[i]);
     }
-    return true;
-}
 
-bool esNumero(const string &tok) {
-    bool punto = false;
-    for (size_t j = 0; j < tok.size(); j++) {
-        if (tok[j] == '.') {
-            if (punto) return false;
-            punto = true;
-        } else if (!esDigito(tok[j])) {
-            return false;
-        }
-    }
-    return !tok.empty();
-}
-
-bool esRelop(const string &tok) {
-    return tok == "<" || tok == ">" || tok == "==" || tok == "!=";
-}
-
-bool esOp(const string &tok) {
-    return tok == "+" || tok == "-" || tok == "*" || tok == "/";
-}
-
-// ------------------- PARSER -------------------
-bool parseExpr(const string &tok) {
-    return esID(tok) || esNumero(tok);
-}
-
-bool parseCOND(const vector<string> &tokens, int &i) {
-    if (i + 2 < tokens.size() && parseExpr(tokens[i]) && esRelop(tokens[i+1]) && parseExpr(tokens[i+2])) {
-        cout << "COND válido" << endl;
-        i += 3;
-        return true;
-    }
-    cout << "COND inválido" << endl;
-    return false;
-}
-
-bool parseArt(const vector<string> &tokens, int &i) {
-    if (i + 2 < tokens.size() && parseExpr(tokens[i]) && esOp(tokens[i+1]) && parseExpr(tokens[i+2])) {
-        cout << "ART válido" << endl;
-        i += 3;
-        return true;
-    }
-    cout << "ART inválido" << endl;
-    return false;
-}
-
-bool parseInstr(const vector<string> &tokens, int &i) {
-    if (i + 3 < tokens.size() && esID(tokens[i]) && tokens[i+1] == "=") {
-        i += 2;
-        if (parseArt(tokens, i)) {
-            if (i < tokens.size() && tokens[i] == ";") {
-                cout << "INSTR válida" << endl;
-                i++;
-                return true;
-            }
-        }
-    }
-    cout << "INSTR inválida" << endl;
-    return false;
-}
-
-bool parseDECL(const vector<string> &tokens, int &i) {
-    if (i < tokens.size() && esTipo(tokens[i])) {
-        i++;
-        if (i < tokens.size() && esID(tokens[i])) {
-            i++;
-            if (i < tokens.size() && tokens[i] == "=") {
-                i++;
-                if (i < tokens.size() && parseExpr(tokens[i])) {
-                    i++;
-                    if (i < tokens.size() && tokens[i] == ";") {
-                        cout << "DECLARACION válida" << endl;
-                        i++;
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    cout << "DECLARACION inválida" << endl;
-    return false;
-}
-
-bool parseIF(const vector<string> &tokens, int &i) {
-    if (i < tokens.size() && tokens[i] == "if") {
-        i++;
-        if (i >= tokens.size() || tokens[i] != "(") {
-            cout << "ESTRUCTURA IF inválida" << endl;
-            return false;
-        }
-        i++;
-        if (!parseCOND(tokens, i)) {
-            cout << "ESTRUCTURA IF inválida" << endl;
-            return false;
-        }
-        // ?? Validación estricta de paréntesis de cierre
-        if (i >= tokens.size() || tokens[i] != ")") {
-            cout << "ESTRUCTURA IF inválida" << endl;
-            return false;
-        }
-        i++;
-        if (i >= tokens.size() || tokens[i] != "{") {
-            cout << "ESTRUCTURA IF inválida" << endl;
-            return false;
-        }
-        i++;
-        while (i < tokens.size() && tokens[i] != "}") {
-            if (!parseInstr(tokens, i)) {
-                cout << "ESTRUCTURA IF inválida" << endl;
-                return false;
-            }
-        }
-        if (i >= tokens.size() || tokens[i] != "}") {
-            cout << "ESTRUCTURA IF inválida" << endl;
-            return false;
-        }
-        i++;
-        if (i < tokens.size() && tokens[i] == "else") {
-            i++;
-            if (i >= tokens.size() || tokens[i] != "{") {
-                cout << "ESTRUCTURA IF inválida" << endl;
-                return false;
-            }
-            i++;
-            while (i < tokens.size() && tokens[i] != "}") {
-                if (!parseInstr(tokens, i)) {
-                    cout << "ESTRUCTURA IF inválida" << endl;
-                    return false;
-                }
-            }
-            if (i >= tokens.size() || tokens[i] != "}") {
-                cout << "ESTRUCTURA IF inválida" << endl;
-                return false;
-            }
-            i++;
-        }
-        cout << "ESTRUCTURA IF válida" << endl;
-        return true;
-    }
-    return false;
-}
-
-// ------------------- MAIN -------------------
-int main() {
-    vector<string> tokens = tokenizar("archivo.txt");
-
-    int i = 0;
+    // Validar múltiples IF
+    bool ifEncontrado = false;
+    size_t i = 0;
     while (i < tokens.size()) {
-        if (esTipo(tokens[i])) {
-            if (!parseDECL(tokens, i)) break;
-        }
-        else if (tokens[i] == "if") {
-            if (!parseIF(tokens, i)) break;
-        }
-        else {
-            cout << "DECLARACION inválida" << endl;
-            break;
+        if (tokens[i].valor == "if") {
+            if (verificarIf(tokens, i)) {
+                ifEncontrado = true;
+            } else {
+                std::cout << "\nError: estructura IF invalida" << std::endl;
+                i++; // avanzar para evitar bucle infinito
+            }
+        } else {
+            i++;
         }
     }
+
+    if (!ifEncontrado) {
+        std::cout << "\nNo se encontró ninguna estructura IF válida" << std::endl;
+    }
+
     return 0;
 }
