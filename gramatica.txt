@@ -1,6 +1,9 @@
+Grámatica base para el desarrollo de la actividad
+
+
 
 IF → if (COND) { INSTRUCCIONES } else { INSTRUCCIONES }
-CONT → expr relop expr
+COND → expr relop expr
 relop → < | > | == | !=
 
 
@@ -8,6 +11,8 @@ DECL → tipo ID = valor ;
 tipo → int | float | char
 
 ID → letra (letra | dígito)*
-INSTR → ID = art 
-art → (E | ID) op (E | ID) 
-op → + | - | * | /
+
+
+DECL → tipo ID 
+DECL → tipo ID = valor ;
+tipo → int | float | char
