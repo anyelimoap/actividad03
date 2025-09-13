@@ -1,6 +1,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype> // para isspace, isalpha, isdigit
+
+bool esSimbolo(char c) {
+    return c == ';' || c == '(' || c == ')' ||
+           c == '{' || c == '}' || c == '+' ||
+           c == '*' || c == '=' || c == '<' ||
+           c == '>' || c == '!';
+}
 
 int main() {
     std::ifstream archivo("archivo.txt"); 
@@ -17,17 +25,24 @@ int main() {
             continue; // Ignorar saltos de línea
         }
 
-        if (c == ' ') {
+        if (isspace(c)) {
             if (!palabra.empty()) {
                 std::cout << "Palabra: " << palabra << std::endl;
-                palabra.clear(); // limpia la cadena
+                palabra.clear();
             }
-        } else {
-            palabra += c; // construir la palabra
+        }
+        else if (esSimbolo(c)) {
+            if (!palabra.empty()) {
+                std::cout << "Palabra: " << palabra << std::endl;
+                palabra.clear();
+            }
+            std::cout << "Palabra: " << c << std::endl; // símbolo como token independiente
+        }
+        else {
+            palabra += c; // construir palabra normal
         }
     }
 
-    // mostrar la última palabra
     if (!palabra.empty()) {
         std::cout << "Palabra: " << palabra << std::endl;
     }
