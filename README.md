@@ -17,3 +17,9 @@
 - Inclusión de la librería `<cctype>` para usar `isspace()`.
 - Reemplazo de la condición `c == ' '` por `isspace(c)`.
 - Ahora se reconocen espacios, tabulaciones y saltos de línea como delimitadores.
+
+**feat(tokenizer):** agregar reconocimiento de símbolos como tokens
+- Creación de la función `esSimbolo(char c)`.
+- Identificación de símbolos comunes: `; ( ) { } + * = < > !`.
+- Símbolos impresos como tokens separados en consola.
+
