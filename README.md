@@ -33,7 +33,15 @@ El programa lee el archivo `archivo.txt`, separa las palabras y símbolos en tok
 - Creación de la función `esSimbolo(char c)`.
 - Identificación de símbolos comunes: `; ( ) { } + * = < > !`.
 - Símbolos impresos como tokens separados en consola.
+
+**refactor(tokenizer):** ajustar flujo de impresión
+- Antes de imprimir un símbolo, se vacía primero la palabra acumulada.
+- Limpieza de la lógica de acumulación de tokens.
+- Tokens impresos de forma más clara y ordenada.
+
+  
 ---
+
 
 
 
