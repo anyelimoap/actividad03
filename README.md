@@ -65,3 +65,29 @@
 - Mensajes de depuración:
   - En caso de `if` con `else`, se imprime `ESTRUCTURA IF válida` solo después de procesar ambos bloques correctamente.
   - En caso de `if` sin `else`, también se confirma con `ESTRUCTURA IF válida`.
+
+**feat(parser):** agregar validaciones de expresiones y condiciones
+- Implementar funciones de parsing adicionales:
+  - `parseExpr()`: valida si un token es identificador o número.
+  - `parseCOND()`: valida condiciones con operadores relacionales (`<`, `>`, `==`, `!=`).
+  - `parseArt()`: valida expresiones aritméticas simples con operadores (`+`, `-`, `*`, `/`).
+- Añadir mensajes de validación más detallados:
+  - `COND válido`, `ART válido`, `INSTR válida`, `DECLARACION válida`, `ESTRUCTURA IF válida`.
+- Diferenciar en `main` entre declaraciones (`parseDECL`) y estructuras de control (`parseIF`).
+- Si no coincide con ninguna, mostrar **DECLARACION inválida** y detener el análisis.
+
+**feat(parser):** nuevas estructuras de parsing
+- `parseInstr()`: reconoce instrucciones de asignación (`x = a + b;`).
+- `parseDECL()`: amplía reconocimiento de declaraciones con asignación inicial (`int x = 10;`).
+- `parseIF()`: soporte para la estructura `if-else`, con validación de condiciones y múltiples instrucciones dentro de `{}`.
+
+**feat**: Se agregaron nuevas funciones al parser y se mejoró la validación de estructuras.
+- Implementación de validadores:
+  - `parseExpr()`: reconoce identificadores y números.
+  - `parseCOND()`: valida condiciones con operadores relacionales (`<`, `>`, `==`, `!=`).
+  - `parseArt()`: valida expresiones aritméticas simples (`+`, `-`, `*`, `/`).
+- Nuevas estructuras en el parser:
+  - `parseInstr()`: instrucciones de asignación (`x = a + b;`).
+  - `parseDECL()`: declaraciones con asignación inicial (`int x = 10;`).
+  - `parseIF()`: soporte para estructuras de control `if-else` con bloques `{}`.
+- Se añadieron mensajes de validación detallados (`COND válido`, `ART válido`, `INSTR válida`, etc.) para mejorar el debugging.
