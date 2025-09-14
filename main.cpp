@@ -27,6 +27,18 @@ bool esIdentificador(const std::string& palabra) {
     return true;
 }
 
+bool esNumero(const std::string& palabra) {
+    if (palabra.empty()) return false;
+    for (size_t i = 0; i < palabra.size(); ++i) {
+        if (!std::isdigit(palabra[i])) return false;
+    }
+    return true;
+}
+
+bool esPalabraValida(const std::string& palabra) {
+    return esTipo(palabra) || esPalabraClave(palabra) || esOperador(palabra) || esIdentificador(palabra) || esNumero(palabra);
+}
+
 int main() {
     std::ifstream archivo("archivo.txt");
     if (!archivo.is_open()) {
@@ -37,25 +49,26 @@ int main() {
     std::string palabra;
     char c;
     bool hayOperacion = false;
+    bool estructuraCorrecta = true;
+    int palabraNum = 1;
 
     while (archivo.get(c)) {
         if (std::isspace(c) || c == ';' || c == '(' || c == ')' || c == '{' || c == '}') {
             if (!palabra.empty()) {
-                if (esTipo(palabra)) {
-                    std::cout << "Tipo detectado: " << palabra << std::endl;
-                } else if (esPalabraClave(palabra)) {
-                    std::cout << "Palabra clave detectada: " << palabra << std::endl;
-                } else if (esOperador(palabra)) {
-                    std::cout << "Operador detectado: " << palabra << std::endl;
-                    hayOperacion = true;
-                } else if (esIdentificador(palabra)) {
-                    std::cout << "Identificador detectado: " << palabra << std::endl;
+                if (esPalabraValida(palabra)) {
+                    std::cout << "Palabra válida detectada (" << palabraNum << "): " << palabra << std::endl;
+                } else {
+                    std::cout << "Palabra NO válida (" << palabraNum << "): " << palabra << std::endl;
+                    estructuraCorrecta = false;
                 }
+                if (esOperador(palabra)) hayOperacion = true;
                 palabra.clear();
+                palabraNum++;
             }
             if (esOperador(std::string(1, c))) {
-                std::cout << "Operador detectado: " << c << std::endl;
+                std::cout << "Operador detectado (" << palabraNum << "): " << c << std::endl;
                 hayOperacion = true;
+                palabraNum++;
             }
         } else {
             palabra += c;
@@ -63,22 +76,19 @@ int main() {
     }
     // Última palabra
     if (!palabra.empty()) {
-        if (esTipo(palabra)) {
-            std::cout << "Tipo detectado: " << palabra << std::endl;
-        } else if (esPalabraClave(palabra)) {
-            std::cout << "Palabra clave detectada: " << palabra << std::endl;
-        } else if (esOperador(palabra)) {
-            std::cout << "Operador detectado: " << palabra << std::endl;
-            hayOperacion = true;
-        } else if (esIdentificador(palabra)) {
-            std::cout << "Identificador detectado: " << palabra << std::endl;
+        if (esPalabraValida(palabra)) {
+            std::cout << "Palabra válida detectada (" << palabraNum << "): " << palabra << std::endl;
+        } else {
+            std::cout << "Palabra NO válida (" << palabraNum << "): " << palabra << std::endl;
+            estructuraCorrecta = false;
         }
+        if (esOperador(palabra)) hayOperacion = true;
     }
 
-    if (hayOperacion) {
-        std::cout << "¡Se detectó gramática de operaciones en el archivo!" << std::endl;
+    if (estructuraCorrecta && hayOperacion) {
+        std::cout << "\n¡La estructura de la gramática está correcta!" << std::endl;
     } else {
-        std::cout << "No se detectó gramática de operaciones en el archivo." << std::endl;
+        std::cout << "\nLa estructura de la gramática NO es correcta." << std::endl;
     }
 
     archivo.close();
