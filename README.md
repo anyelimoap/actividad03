@@ -65,3 +65,4 @@
 - Recorre el bloque `{}` del `if` y del `else` hasta encontrar `}`.
 - Manejo de múltiples estructuras `if` en el mismo archivo de entrada.
 - Reporta error explícito si la estructura no es válida.
+
