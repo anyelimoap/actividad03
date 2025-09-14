@@ -23,3 +23,19 @@
   - Mensajes consistentes para identificación de tokens.
 - Problemas:
   - Reconoce la asignación y expresiones aritméticas como identificadores (ID).
+
+**feat(parser):** agregar soporte para expresiones aritméticas (ART) y condiciones (COND)
+- Tokenizador:
+  - Se añadieron símbolos `-` y `/` para reconocer más operadores.
+- Validadores:
+  - Nuevo validador `esNumero` para reconocer enteros y decimales.
+  - Nuevas funciones `esRelop` (operadores relacionales) y `esOp` (operadores aritméticos).
+- Parser:
+  - `parseExpr`: reconoce identificadores (ID) y números como expresiones válidas.
+  - `parseCOND`: analiza condiciones con formato <expr> <relop> <expr>.
+  - `parseArt`: analiza operaciones aritméticas <expr> <op> <expr>.
+  - `parseInstr`: añade soporte para asignaciones con expresiones aritméticas.
+  - `parseDECL`: valida asignación inicial usando `parseExpr`.
+  - `parseIF`: estructura mejorada, ahora soporta condiciones más formales y bloques de instrucciones con asignaciones aritméticas.
+- Main:
+  - El flujo principal ahora reconoce y procesa declaraciones, instrucciones aritméticas y estructuras `if-else`.
