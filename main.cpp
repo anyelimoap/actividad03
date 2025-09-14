@@ -1,61 +1,54 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <cctype>
-using namespace std;
+#include <cctype> // para isspace , isalpha, isdigit
 
-// ------------------- TOKENIZADOR -------------------
 bool esSimbolo(char c) {
     return c == ';' || c == '(' || c == ')' ||
            c == '{' || c == '}' || c == '+' ||
-           c == '-' || c == '*' || c == '/' ||
-           c == '=' || c == '<' || c == '>' ||
-           c == '!';
+           c == '*' || c == '=' || c == '<' ||
+           c == '>' || c == '!';
 }
 
-vector<string> tokenizar(const string &nombreArchivo) {
-    ifstream archivo(nombreArchivo);
-    vector<string> tokens;
+int main() {
+    std::ifstream archivo("archivo.txt"); 
     if (!archivo.is_open()) {
-        cerr << "No se pudo abrir el archivo." << endl;
-        return tokens;
+        std::cerr << "No se pudo abrir el archivo." << std::endl;
+        return 1;
     }
 
     char c;
-    string palabra = "";
+    std::string palabra = "";
+
     while (archivo.get(c)) {
-        if (c == '\n' || c == '\r') continue;
+        if (c == '\n' || c == '\r') {
+            continue; // Ignorar saltos de línea
+        }
 
         if (isspace(c)) {
             if (!palabra.empty()) {
-                tokens.push_back(palabra);
+                std::cout << "Palabra: " << palabra << std::endl;
                 palabra.clear();
             }
         }
         else if (esSimbolo(c)) {
             if (!palabra.empty()) {
-                tokens.push_back(palabra);
+                std::cout << "Palabra: " << palabra << std::endl;
                 palabra.clear();
             }
-            if ((c == '=' || c == '!' || c == '<' || c == '>') && archivo.peek() == '=') {
-                char next;
-                archivo.get(next);
-                string op;
-                op += c;
-                op += next;
-                tokens.push_back(op);
-            } else {
-                tokens.push_back(string(1, c));
-            }
+            std::cout << "Palabra: " << c << std::endl; // símbolo como token independiente
         }
         else {
-            palabra += c;
+            palabra += c; // construir palabra normal
         }
     }
-    if (!palabra.empty()) tokens.push_back(palabra);
+
+    if (!palabra.empty()) {
+        std::cout << "Palabra: " << palabra << std::endl;
+    }
 
     archivo.close();
+<<<<<<< HEAD
     return tokens;
 }
 
@@ -279,5 +272,8 @@ int main() {
             break;
         }
     }
+=======
+>>>>>>> aade1f38fbc81993c52a837b022f75c17e746680
     return 0;
 }
+

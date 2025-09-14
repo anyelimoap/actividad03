@@ -1,8 +1,6 @@
-
 IF → if (COND) { INSTRUCCIONES } else { INSTRUCCIONES }
 CONT → expr relop expr
 relop → < | > | == | !=
-
 
 DECL → tipo ID = valor ;
 tipo → int | float | char
