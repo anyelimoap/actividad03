@@ -1,11 +1,6 @@
-Grámatica base para el desarrollo de la actividad
-
-
-
 IF → if (COND) { INSTRUCCIONES } else { INSTRUCCIONES }
 COND → expr relop expr
 relop → < | > | == | !=
-
 
 DECL → tipo ID = valor ;
 tipo → int | float | char
@@ -16,3 +11,28 @@ ID → letra (letra | dígito)*
 DECL → tipo ID 
 DECL → tipo ID = valor ;
 tipo → int | float | char
+
+Reconocimiento de Gramatica de Estructuras aritméticas
+
+La grámatica de una operación siempre contempla cadenas de producción que mantienen la siguiente Estructura:
+
+
+Simbolo de inicio = EXPR
+
+Conjunto de terminales: 
+Σ =  { 0,1,2,3,4,5,6,7,8,9, a,b,c,...,z, +, -, *, /, (, ) }
+
+Conjunto de no terminales: 
+N = { EXPR, TERM, FACTOR, ID, NUM }
+
+Reglas de producción: 
+
+EXPR   → EXPR + TERM | EXPR - TERM | TERM
+TERM   → TERM * FACTOR | TERM / FACTOR | FACTOR
+FACTOR → ( EXPR ) | ID | NUM
+ID     → letra (letra | dígito)*
+NUM    → dígito (dígito)*
+
+
+
+

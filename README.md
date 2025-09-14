@@ -7,3 +7,5 @@ a. Gramática de expresiones aritméticas (3)
 b. Gramática de identificadores (3)
 c. Gramática de declaraciones (3)
 d. Gramática de condicionales (3)
+
+Omar Morales - Análisis de expresiones grámaticas
