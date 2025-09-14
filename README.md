@@ -39,3 +39,17 @@
   - `parseIF`: estructura mejorada, ahora soporta condiciones más formales y bloques de instrucciones con asignaciones aritméticas.
 - Main:
   - El flujo principal ahora reconoce y procesa declaraciones, instrucciones aritméticas y estructuras `if-else`.
+
+**refactor:** mejorar mensajes de validación y simplificar flujo de parseo
+- Mensajes de salida más claros:
+  - `parseCOND`, `parseArt`, `parseInstr`, `parseDECL`, `parseIF` ahora imprimen “válido / inválido” en lugar de solo mostrar estructuras detectadas.
+  - Esto mejora la depuración y permite identificar rápidamente si la gramática analizada es correcta o no.
+- Uniformidad en la nomenclatura:
+  - Se reemplazaron frases como `Fin de instrucción` o `Fin de declaración` por `INSTR válida` y `DECLARACION válida`, unificando la semántica.
+- Control de errores más explícito:
+  - En lugar de depender solo de `cerr << "Error ..."`, ahora cada función imprime su propio estado de validez.
+  - Ejemplo: `ESTRUCTURA IF inválida` en caso de fallo.
+- Simplificación en el main:
+  - Ya no se muestran errores genéricos, pues las funciones de parseo se encargan de imprimir el resultado detallado.
+  - El bucle principal ahora se detiene simplemente cuando un `parseX` devuelve `false`.
+
