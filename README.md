@@ -11,7 +11,7 @@ Este proyecto tiene como objetivo **implementar y analizar gramáticas libres de
 
 El programa lee el archivo `archivo.txt`, separa las palabras y símbolos en tokens, y los compara con las reglas definidas en `gramatica.txt` para verificar su validez según las gramáticas planteadas.
 
-Esta actividad fue desarrollada en equipo a partir de varias versiones. A continuación, se documentan los commits principales siguiendo buenas prácticas de desarrollo de software.
+Esta actividad fue desarrollada en equipo a partir de varias versiones. A continuación, se documentan los commits principales:
 ---
 
 ## Versión 1 (commit inicial brindado en clase)
@@ -53,6 +53,7 @@ Se mejoró la robustez del programa al permitir la detección de cualquier tipo 
 - Código más cercano al funcionamiento de un **analizador léxico básico**.
 
 ---
+
 
 
 
