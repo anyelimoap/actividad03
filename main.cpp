@@ -175,22 +175,51 @@ bool parseIF(const vector<string> &tokens, int &i) {
         i++;
         if (i < tokens.size() && tokens[i] == "(") {
             i++;
-            if (!parseCOND(tokens, i)) { 
-                cout << "ESTRUCTURA IF inválida" << endl; 
-                return false; 
+            if (!parseCOND(tokens, i)) {
+                cout << "ESTRUCTURA IF inválida" << endl;
+                return false;
             }
             if (i < tokens.size() && tokens[i] == ")") i++;
+
             if (i < tokens.size() && tokens[i] == "{") {
                 i++;
                 while (i < tokens.size() && tokens[i] != "}") {
-                    if (!parseInstr(tokens, i)) { 
-                        cout << "ESTRUCTURA IF inválida" << endl; 
-                        return false; 
+                    if (!parseInstr(tokens, i)) {
+                        cout << "ESTRUCTURA IF inválida" << endl;
+                        return false;
                     }
                 }
-                if (i < tokens.size() && tokens[i] == "}") i++;
-                cout << "ESTRUCTURA IF válida" << endl;
-                return true;
+                if (i < tokens.size() && tokens[i] == "}") {
+                    i++;
+                } else {
+                    cout << "ESTRUCTURA IF inválida" << endl;
+                    return false;
+                }
+
+                // --- manejar else ---
+                if (i < tokens.size() && tokens[i] == "else") {
+                    i++;
+                    if (i < tokens.size() && tokens[i] == "{") {
+                        i++;
+                        while (i < tokens.size() && tokens[i] != "}") {
+                            if (!parseInstr(tokens, i)) {
+                                cout << "ESTRUCTURA IF inválida" << endl;
+                                return false;
+                            }
+                        }
+                        if (i < tokens.size() && tokens[i] == "}") {
+                            i++;
+                            cout << "ESTRUCTURA IF válida" << endl;
+                            return true;
+                        }
+                    }
+                    cout << "ESTRUCTURA IF inválida" << endl;
+                    return false;
+                } else {
+                    // permitir if sin else
+                    cout << "ESTRUCTURA IF válida" << endl;
+                    return true;
+                }
             }
         }
         cout << "ESTRUCTURA IF inválida" << endl;
@@ -198,7 +227,6 @@ bool parseIF(const vector<string> &tokens, int &i) {
     }
     return false;
 }
-
 
 // ------------------- MAIN -------------------
 int main() {
