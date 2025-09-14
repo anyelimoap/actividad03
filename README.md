@@ -41,3 +41,8 @@
   - Reconoce **identificadores válidos** (`EXPR`) que empiezan con letra y pueden contener alfanuméricos.
   - Retorna `DESCONOCIDO` para tokens inválidos.
 
+**feat(tokenizer):** manejo de separadores y operadores múltiples
+- Función `esSeparador()` para `; ( ) { }`.
+- Función `esOperador()` para `+ - * / = < > !`.
+- Detección de operadores de dos caracteres (`==`, `!=`, `<=`, `>=`) mediante `peek()` en el stream.
+- Almacena separadores con tipo `SEPARADOR`.
