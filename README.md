@@ -28,4 +28,9 @@
 - Limpieza de la lógica de acumulación de tokens.
 - Tokens impresos de forma más clara y ordenada.
 
+**improvements:**
+- Mayor precisión en la separación de tokens.
+- Reconocimiento de operadores y delimitadores como entidades independientes.
+- Código más cercano al funcionamiento de un analizador léxico básico.
+
 
