@@ -89,10 +89,14 @@ bool parseDECL(const vector<string> &tokens, int &i) {
         i++;
         if (i < tokens.size() && esID(tokens[i])) {
             cout << "  ID: " << tokens[i] << endl;
+            cout << "ID detectado: " << tokens[i] << endl;
             i++;
             if (i < tokens.size() && tokens[i] == "=") {
                 i++;
                 if (i < tokens.size() && (isdigit(tokens[i][0]) || esID(tokens[i]))) {
+                    if (esID(tokens[i])) {
+                        cout << "ID detectado: " << tokens[i] << endl;
+                    }
                     cout << "  Valor: " << tokens[i] << endl;
                     i++;
                     if (i < tokens.size() && tokens[i] == ";") {
@@ -115,7 +119,10 @@ bool parseIF(const vector<string> &tokens, int &i) {
             i++;
             cout << "  COND: ";
             while (i < tokens.size() && tokens[i] != ")") {
-                cout << tokens[i] << "";
+                cout << tokens[i] << " ";
+                if (esID(tokens[i])) {
+                    cout << "\nID detectado: " << tokens[i];
+                }
                 i++;
             }
             cout << endl;
@@ -125,7 +132,10 @@ bool parseIF(const vector<string> &tokens, int &i) {
                 i++;
                 cout << "  INSTRUCCIONES (if): ";
                 while (i < tokens.size() && tokens[i] != "}") {
-                    cout << tokens[i] << "";
+                    cout << tokens[i] << " ";
+                    if (esID(tokens[i])) {
+                        cout << "\nID detectado: " << tokens[i];
+                    }
                     i++;
                 }
                 cout << endl;
@@ -137,7 +147,10 @@ bool parseIF(const vector<string> &tokens, int &i) {
                         i++;
                         cout << "  INSTRUCCIONES (else): ";
                         while (i < tokens.size() && tokens[i] != "}") {
-                            cout << tokens[i] << "";
+                            cout << tokens[i] << " ";
+                            if (esID(tokens[i])) {
+                                cout << "\nID detectado: " << tokens[i];
+                            }
                             i++;
                         }
                         cout << endl;
