@@ -167,43 +167,59 @@ bool parseDECL(const vector<string> &tokens, int &i) {
 bool parseIF(const vector<string> &tokens, int &i) {
     if (i < tokens.size() && tokens[i] == "if") {
         i++;
-        if (i < tokens.size() && tokens[i] == "(") {
-            i++;
-            if (!parseCOND(tokens, i)) {
+        if (i >= tokens.size() || tokens[i] != "(") {
+            cout << "ESTRUCTURA IF inválida" << endl;
+            return false;
+        }
+        i++;
+        if (!parseCOND(tokens, i)) {
+            cout << "ESTRUCTURA IF inválida" << endl;
+            return false;
+        }
+        // ?? Validación estricta de paréntesis de cierre
+        if (i >= tokens.size() || tokens[i] != ")") {
+            cout << "ESTRUCTURA IF inválida" << endl;
+            return false;
+        }
+        i++;
+        if (i >= tokens.size() || tokens[i] != "{") {
+            cout << "ESTRUCTURA IF inválida" << endl;
+            return false;
+        }
+        i++;
+        while (i < tokens.size() && tokens[i] != "}") {
+            if (!parseInstr(tokens, i)) {
                 cout << "ESTRUCTURA IF inválida" << endl;
                 return false;
             }
-            if (i < tokens.size() && tokens[i] == ")") i++;
-            if (i < tokens.size() && tokens[i] == "{") {
-                i++;
-                while (i < tokens.size() && tokens[i] != "}") {
-                    if (!parseInstr(tokens, i)) {
-                        cout << "ESTRUCTURA IF inválida" << endl;
-                        return false;
-                    }
-                }
-                if (i < tokens.size() && tokens[i] == "}") i++;
-                if (i < tokens.size() && tokens[i] == "else") {
-                    i++;
-                    if (i < tokens.size() && tokens[i] == "{") {
-                        i++;
-                        while (i < tokens.size() && tokens[i] != "}") {
-                            if (!parseInstr(tokens, i)) {
-                                cout << "ESTRUCTURA IF inválida" << endl;
-                                return false;
-                            }
-                        }
-                        if (i < tokens.size() && tokens[i] == "}") {
-                            i++;
-                            cout << "ESTRUCTURA IF válida" << endl;
-                            return true;
-                        }
-                    }
+        }
+        if (i >= tokens.size() || tokens[i] != "}") {
+            cout << "ESTRUCTURA IF inválida" << endl;
+            return false;
+        }
+        i++;
+        if (i < tokens.size() && tokens[i] == "else") {
+            i++;
+            if (i >= tokens.size() || tokens[i] != "{") {
+                cout << "ESTRUCTURA IF inválida" << endl;
+                return false;
+            }
+            i++;
+            while (i < tokens.size() && tokens[i] != "}") {
+                if (!parseInstr(tokens, i)) {
+                    cout << "ESTRUCTURA IF inválida" << endl;
+                    return false;
                 }
             }
+            if (i >= tokens.size() || tokens[i] != "}") {
+                cout << "ESTRUCTURA IF inválida" << endl;
+                return false;
+            }
+            i++;
         }
+        cout << "ESTRUCTURA IF válida" << endl;
+        return true;
     }
-    cout << "ESTRUCTURA IF inválida" << endl;
     return false;
 }
 
