@@ -66,3 +66,21 @@
 - Manejo de múltiples estructuras `if` en el mismo archivo de entrada.
 - Reporta error explícito si la estructura no es válida.
 
+**feat(main):** integración completa de análisis léxico y sintáctico
+- Tokenización en un vector `tokens` con tipo y valor.
+- Impresión de tokens en formato de gramática.
+- Bucle que detecta múltiples `if` en el código fuente.
+- Mensaje de error `Error: estructura IF invalida` si la validación falla.
+- Mensaje final si no se encuentra ningún `if`.
+
+**improvements:**
+- Flujo principal más robusto: ya no se limita a tokenizar, también valida gramáticas.
+- Salida más clara y alineada con las producciones formales.
+- Soporte para múltiples bloques `if-else` en un mismo archivo de entrada.
+
+**known issues:**
+- La validación de `if` es rígida: exige siempre la estructura completa con `else`. No reconoce `if` sin `else`.
+- Los bloques `{}` se recorren de forma lineal, sin analizar instrucciones internas.
+- No diferencia entre operadores aritméticos (`+`, `-`, `*`, `/`) y relacionales (`<`, `>`, `==`, `!=`) en el etiquetado, todos caen en `RELOP`.
+- Los números decimales no son reconocidos (solo enteros).
+- No existe aún soporte para declaraciones (`DECL`) ni asignaciones (`INSTR`).
