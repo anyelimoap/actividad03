@@ -9,8 +9,9 @@ using namespace std;
 bool esSimbolo(char c) {
     return c == ';' || c == '(' || c == ')' ||
            c == '{' || c == '}' || c == '+' ||
-           c == '*' || c == '=' || c == '<' ||
-           c == '>' || c == '!';
+           c == '-' || c == '*' || c == '/' ||
+           c == '=' || c == '<' || c == '>' ||
+           c == '!';
 }
 
 vector<string> tokenizar(const string &nombreArchivo) {
@@ -81,7 +82,66 @@ bool esID(const string &tok) {
     return true;
 }
 
+bool esNumero(const string &tok) {
+    bool punto = false;
+    for (size_t j = 0; j < tok.size(); j++) {
+        if (tok[j] == '.') {
+            if (punto) return false;
+            punto = true;
+        } else if (!esDigito(tok[j])) {
+            return false;
+        }
+    }
+    return !tok.empty();
+}
+
+bool esRelop(const string &tok) {
+    return tok == "<" || tok == ">" || tok == "==" || tok == "!=";
+}
+
+bool esOp(const string &tok) {
+    return tok == "+" || tok == "-" || tok == "*" || tok == "/";
+}
+
 // ------------------- PARSER -------------------
+bool parseExpr(const string &tok) {
+    return esID(tok) || esNumero(tok);
+}
+
+bool parseCOND(const vector<string> &tokens, int &i) {
+    if (i + 2 < tokens.size() && parseExpr(tokens[i]) && esRelop(tokens[i+1]) && parseExpr(tokens[i+2])) {
+        cout << "    COND: " << tokens[i] << " " << tokens[i+1] << " " << tokens[i+2] << endl;
+        i += 3;
+        return true;
+    }
+    return false;
+}
+
+bool parseArt(const vector<string> &tokens, int &i) {
+    if (i + 2 < tokens.size() && parseExpr(tokens[i]) && esOp(tokens[i+1]) && parseExpr(tokens[i+2])) {
+        cout << "    ART: " << tokens[i] << " " << tokens[i+1] << " " << tokens[i+2] << endl;
+        i += 3;
+        return true;
+    }
+    return false;
+}
+
+bool parseInstr(const vector<string> &tokens, int &i) {
+    if (i + 3 < tokens.size() && esID(tokens[i]) && tokens[i+1] == "=") {
+        cout << "  INSTR detectada:" << endl;
+        cout << "    ID: " << tokens[i] << endl;
+        i += 2;
+        if (parseArt(tokens, i)) {
+            if (i < tokens.size() && tokens[i] == ";") {
+                cout << "    Fin de instruccion" << endl;
+                i++;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool parseDECL(const vector<string> &tokens, int &i) {
     if (i < tokens.size() && esTipo(tokens[i])) {
         cout << "DECLARACION detectada:" << endl;
@@ -89,14 +149,10 @@ bool parseDECL(const vector<string> &tokens, int &i) {
         i++;
         if (i < tokens.size() && esID(tokens[i])) {
             cout << "  ID: " << tokens[i] << endl;
-            cout << "ID detectado: " << tokens[i] << endl;
             i++;
             if (i < tokens.size() && tokens[i] == "=") {
                 i++;
-                if (i < tokens.size() && (isdigit(tokens[i][0]) || esID(tokens[i]))) {
-                    if (esID(tokens[i])) {
-                        cout << "ID detectado: " << tokens[i] << endl;
-                    }
+                if (i < tokens.size() && parseExpr(tokens[i])) {
                     cout << "  Valor: " << tokens[i] << endl;
                     i++;
                     if (i < tokens.size() && tokens[i] == ";") {
@@ -117,43 +173,25 @@ bool parseIF(const vector<string> &tokens, int &i) {
         i++;
         if (i < tokens.size() && tokens[i] == "(") {
             i++;
-            cout << "  COND: ";
-            while (i < tokens.size() && tokens[i] != ")") {
-                cout << tokens[i] << " ";
-                if (esID(tokens[i])) {
-                    cout << "\nID detectado: " << tokens[i];
-                }
-                i++;
-            }
-            cout << endl;
+            if (!parseCOND(tokens, i)) return false;
             if (i < tokens.size() && tokens[i] == ")") i++;
 
             if (i < tokens.size() && tokens[i] == "{") {
                 i++;
-                cout << "  INSTRUCCIONES (if): ";
+                cout << "  INSTRUCCIONES (if):" << endl;
                 while (i < tokens.size() && tokens[i] != "}") {
-                    cout << tokens[i] << " ";
-                    if (esID(tokens[i])) {
-                        cout << "\nID detectado: " << tokens[i];
-                    }
-                    i++;
+                    if (!parseInstr(tokens, i)) return false;
                 }
-                cout << endl;
                 if (i < tokens.size() && tokens[i] == "}") i++;
 
                 if (i < tokens.size() && tokens[i] == "else") {
                     i++;
                     if (i < tokens.size() && tokens[i] == "{") {
                         i++;
-                        cout << "  INSTRUCCIONES (else): ";
+                        cout << "  INSTRUCCIONES (else):" << endl;
                         while (i < tokens.size() && tokens[i] != "}") {
-                            cout << tokens[i] << " ";
-                            if (esID(tokens[i])) {
-                                cout << "\nID detectado: " << tokens[i];
-                            }
-                            i++;
+                            if (!parseInstr(tokens, i)) return false;
                         }
-                        cout << endl;
                         if (i < tokens.size() && tokens[i] == "}") {
                             i++;
                             return true;
