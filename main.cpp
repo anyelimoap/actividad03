@@ -110,53 +110,54 @@ bool parseExpr(const string &tok) {
 
 bool parseCOND(const vector<string> &tokens, int &i) {
     if (i + 2 < tokens.size() && parseExpr(tokens[i]) && esRelop(tokens[i+1]) && parseExpr(tokens[i+2])) {
-        cout << "    COND: " << tokens[i] << " " << tokens[i+1] << " " << tokens[i+2] << endl;
+        cout << "COND válido: " << tokens[i] << " " << tokens[i+1] << " " << tokens[i+2] << endl;
         i += 3;
         return true;
     }
+    cout << "COND inválido" << endl;
     return false;
 }
 
 bool parseArt(const vector<string> &tokens, int &i) {
     if (i + 2 < tokens.size() && parseExpr(tokens[i]) && esOp(tokens[i+1]) && parseExpr(tokens[i+2])) {
-        cout << "    ART: " << tokens[i] << " " << tokens[i+1] << " " << tokens[i+2] << endl;
+        cout << "ART válido: " << tokens[i] << " " << tokens[i+1] << " " << tokens[i+2] << endl;
         i += 3;
         return true;
     }
+    cout << "ART inválido" << endl;
     return false;
 }
 
 bool parseInstr(const vector<string> &tokens, int &i) {
     if (i + 3 < tokens.size() && esID(tokens[i]) && tokens[i+1] == "=") {
-        cout << "  INSTR detectada:" << endl;
-        cout << "    ID: " << tokens[i] << endl;
+        cout << "INSTR detectada:" << endl;
         i += 2;
         if (parseArt(tokens, i)) {
             if (i < tokens.size() && tokens[i] == ";") {
-                cout << "    Fin de instruccion" << endl;
+                cout << "INSTR válida" << endl;
                 i++;
                 return true;
             }
         }
+        cout << "INSTR inválida" << endl;
+        return false;
     }
+    cout << "INSTR inválida" << endl;
     return false;
 }
 
 bool parseDECL(const vector<string> &tokens, int &i) {
     if (i < tokens.size() && esTipo(tokens[i])) {
         cout << "DECLARACION detectada:" << endl;
-        cout << "  Tipo: " << tokens[i] << endl;
         i++;
         if (i < tokens.size() && esID(tokens[i])) {
-            cout << "  ID: " << tokens[i] << endl;
             i++;
             if (i < tokens.size() && tokens[i] == "=") {
                 i++;
                 if (i < tokens.size() && parseExpr(tokens[i])) {
-                    cout << "  Valor: " << tokens[i] << endl;
                     i++;
                     if (i < tokens.size() && tokens[i] == ";") {
-                        cout << "  Fin de declaracion" << endl;
+                        cout << "DECLARACION válida" << endl;
                         i++;
                         return true;
                     }
@@ -164,6 +165,7 @@ bool parseDECL(const vector<string> &tokens, int &i) {
             }
         }
     }
+    cout << "DECLARACION inválida" << endl;
     return false;
 }
 
@@ -173,36 +175,30 @@ bool parseIF(const vector<string> &tokens, int &i) {
         i++;
         if (i < tokens.size() && tokens[i] == "(") {
             i++;
-            if (!parseCOND(tokens, i)) return false;
+            if (!parseCOND(tokens, i)) { 
+                cout << "ESTRUCTURA IF inválida" << endl; 
+                return false; 
+            }
             if (i < tokens.size() && tokens[i] == ")") i++;
-
             if (i < tokens.size() && tokens[i] == "{") {
                 i++;
-                cout << "  INSTRUCCIONES (if):" << endl;
                 while (i < tokens.size() && tokens[i] != "}") {
-                    if (!parseInstr(tokens, i)) return false;
-                }
-                if (i < tokens.size() && tokens[i] == "}") i++;
-
-                if (i < tokens.size() && tokens[i] == "else") {
-                    i++;
-                    if (i < tokens.size() && tokens[i] == "{") {
-                        i++;
-                        cout << "  INSTRUCCIONES (else):" << endl;
-                        while (i < tokens.size() && tokens[i] != "}") {
-                            if (!parseInstr(tokens, i)) return false;
-                        }
-                        if (i < tokens.size() && tokens[i] == "}") {
-                            i++;
-                            return true;
-                        }
+                    if (!parseInstr(tokens, i)) { 
+                        cout << "ESTRUCTURA IF inválida" << endl; 
+                        return false; 
                     }
                 }
+                if (i < tokens.size() && tokens[i] == "}") i++;
+                cout << "ESTRUCTURA IF válida" << endl;
+                return true;
             }
         }
+        cout << "ESTRUCTURA IF inválida" << endl;
+        return false;
     }
     return false;
 }
+
 
 // ------------------- MAIN -------------------
 int main() {
@@ -215,16 +211,10 @@ int main() {
     int i = 0;
     while (i < tokens.size()) {
         if (esTipo(tokens[i])) {
-            if (!parseDECL(tokens, i)) {
-                cerr << "Error en declaracion" << endl;
-                break;
-            }
+            if (!parseDECL(tokens, i)) break;
         }
         else if (tokens[i] == "if") {
-            if (!parseIF(tokens, i)) {
-                cerr << "Error en if" << endl;
-                break;
-            }
+            if (!parseIF(tokens, i)) break;
         }
         else if (esID(tokens[i])) {
             cout << "ID detectado: " << tokens[i] << endl;
