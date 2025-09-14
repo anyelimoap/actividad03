@@ -3,44 +3,84 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <cctype>
+
+bool esTipo(const std::string& palabra) {
+    return palabra == "int" || palabra == "float" || palabra == "char";
+}
+
+bool esPalabraClave(const std::string& palabra) {
+    return palabra == "if" || palabra == "else";
+}
+
+bool esOperador(const std::string& palabra) {
+    return palabra == "+" || palabra == "-" || palabra == "*" || palabra == "/" ||
+           palabra == ">" || palabra == "<" || palabra == "==" || palabra == "!=" || palabra == "=";
+}
+
+bool esIdentificador(const std::string& palabra) {
+    if (palabra.empty() || !std::isalpha(palabra[0])) return false;
+    for (size_t i = 0; i < palabra.size(); ++i) {
+        if (!std::isalnum(palabra[i])) return false;
+    }
+    return true;
+}
 
 int main() {
-    // Abre el archivo "archivo.txt" para lectura
-    std::ifstream archivo("archivo.txt"); 
+    std::ifstream archivo("archivo.txt");
     if (!archivo.is_open()) {
-        // Si no se puede abrir el archivo, muestra un mensaje de error y termina el programa
         std::cerr << "No se pudo abrir el archivo." << std::endl;
         return 1;
     }
 
+    std::string palabra;
     char c;
-    std::string palabra = "";
+    bool hayOperacion = false;
 
-    // Lee el archivo carácter por carácter
     while (archivo.get(c)) {
-        // Ignora los saltos de línea
-        if (c == '\n' || c == '\r') {
-            continue;
-        }
-
-        // Si encuentra un espacio, imprime la palabra construida y la limpia
-        if (c == ' ') {
+        if (std::isspace(c) || c == ';' || c == '(' || c == ')' || c == '{' || c == '}') {
             if (!palabra.empty()) {
-                std::cout << "Palabra: " << palabra << std::endl;
-                palabra.clear(); // limpia la cadena
+                if (esTipo(palabra)) {
+                    std::cout << "Tipo detectado: " << palabra << std::endl;
+                } else if (esPalabraClave(palabra)) {
+                    std::cout << "Palabra clave detectada: " << palabra << std::endl;
+                } else if (esOperador(palabra)) {
+                    std::cout << "Operador detectado: " << palabra << std::endl;
+                    hayOperacion = true;
+                } else if (esIdentificador(palabra)) {
+                    std::cout << "Identificador detectado: " << palabra << std::endl;
+                }
+                palabra.clear();
+            }
+            if (esOperador(std::string(1, c))) {
+                std::cout << "Operador detectado: " << c << std::endl;
+                hayOperacion = true;
             }
         } else {
-            // Si no es espacio, agrega el carácter a la palabra
             palabra += c;
         }
     }
-
-    // Imprime la última palabra si existe
+    // Última palabra
     if (!palabra.empty()) {
-        std::cout << "Palabra: " << palabra << std::endl;
+        if (esTipo(palabra)) {
+            std::cout << "Tipo detectado: " << palabra << std::endl;
+        } else if (esPalabraClave(palabra)) {
+            std::cout << "Palabra clave detectada: " << palabra << std::endl;
+        } else if (esOperador(palabra)) {
+            std::cout << "Operador detectado: " << palabra << std::endl;
+            hayOperacion = true;
+        } else if (esIdentificador(palabra)) {
+            std::cout << "Identificador detectado: " << palabra << std::endl;
+        }
     }
 
-    // Cierra el archivo
+    if (hayOperacion) {
+        std::cout << "¡Se detectó gramática de operaciones en el archivo!" << std::endl;
+    } else {
+        std::cout << "No se detectó gramática de operaciones en el archivo." << std::endl;
+    }
+
     archivo.close();
     return 0;
 }
