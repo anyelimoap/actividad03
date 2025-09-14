@@ -29,8 +29,12 @@ El programa lee el archivo `archivo.txt`, separa las palabras y símbolos en tok
 - Reemplazo de la condición `c == ' '` por `isspace(c)`.
 - Ahora se reconocen espacios, tabulaciones y saltos de línea como delimitadores.
 
-
+**feat(tokenizer):** agregar reconocimiento de símbolos como tokens
+- Creación de la función `esSimbolo(char c)`.
+- Identificación de símbolos comunes: `; ( ) { } + * = < > !`.
+- Símbolos impresos como tokens separados en consola.
 ---
+
 
 
 
