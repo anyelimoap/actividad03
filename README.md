@@ -19,9 +19,12 @@ El programa lee el archivo `archivo.txt`, separa las palabras y símbolos en tok
 - Separar palabras únicamente con el espacio `' '`.
 - Imprimir cada palabra encontrada en consola.
 - Manejo básico de acumulación de caracteres en la variable `palabra`.
-
-
+- Problemas:
+  - No reconoce tabulaciones ni otros tipos de espacio.
+  - Los símbolos (`;`, `+`, `=`, `(`, `)`, `{`, `}`) permanecen pegados a las palabras.
+  - Funcionalidad limitada como analizador de tokens.
 ---
+
 
 
 
