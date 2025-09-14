@@ -61,7 +61,8 @@ vector<string> tokenizar(const string &nombreArchivo) {
 
 // ------------------- VALIDADORES -------------------
 bool esTipo(const string &tok) {
-    return tok == "int" || tok == "float" || tok == "char";
+    return tok == "int" || tok == "float" || tok == "char" ||
+           tok == "void" || tok == "double";  
 }
 
 bool esLetra(char c) {
@@ -74,9 +75,9 @@ bool esDigito(char c) {
 
 bool esID(const string &tok) {
     if (tok.empty()) return false;
-    if (!esLetra(tok[0])) return false;
+    if (!esLetra(tok[0]) && tok[0] != '_') return false;  
     for (size_t j = 1; j < tok.size(); j++) {
-        if (!(esLetra(tok[j]) || esDigito(tok[j]))) return false;
+        if (!(esLetra(tok[j]) || esDigito(tok[j]) || tok[j] == '_')) return false; 
     }
     return true;
 }
