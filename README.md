@@ -1,7 +1,17 @@
-# Historial de cambios
+# Compiladores Actividad 02 
+
+Este proyecto tiene como objetivo **implementar y analizar gramáticas libres de contexto (GLC)** a través de un programa en c++ que lee un archivo de texto y separa su contenido en palabras o tokens. El propósito es reconocer instrucciones de un lenguaje sencillo a través de un programa en C++ que actúa como un **analizador léxico y sintáctico básico**.   En particular, se trabajan cuatro tipos de gramáticas: **expresiones aritméticas**, **identificadores**, **declaraciones** y **condicionales**. 
+
+---
+## Estructura del proyecto
+
+- **`main.cpp`** → Código en C++ encargado de leer y procesar los archivos de entrada.  
+- **`gramatica.txt`** → Contiene la gramática que se desea implementar y analizar.  
+- **`archivo.txt`** → Archivo de entrada que incluye el bloque de código fuente a evaluar.  
+
+El programa lee el archivo `archivo.txt`, separa las palabras y símbolos en tokens, y los compara con las reglas definidas en `gramatica.txt` para verificar su validez según las gramáticas planteadas.
 
 Esta actividad fue desarrollada en equipo a partir de varias versiones. A continuación, se documentan los commits principales siguiendo buenas prácticas de desarrollo de software.
-
 ---
 
 ## Versión 1 (commit inicial brindado en clase)
@@ -44,9 +54,5 @@ Se mejoró la robustez del programa al permitir la detección de cualquier tipo 
 
 ---
 
-## Próximos pasos sugeridos
-- Implementar reconocimiento de **palabras reservadas** (`if`, `else`, `while`, etc.).
-- Diferenciar entre **números** e **identificadores**.
-- Ampliar la lista de símbolos soportados.
-- Guardar los tokens en una estructura (`vector` o `lista`) en lugar de imprimirlos directamente.
+
 
