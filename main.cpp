@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cctype> // para isspace, isalpha, isdigit
+#include <cctype> // para isspace , isalpha, isdigit
 
 bool esSimbolo(char c) {
     return c == ';' || c == '(' || c == ')' ||
@@ -50,3 +50,4 @@ int main() {
     archivo.close();
     return 0;
 }
+
