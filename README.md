@@ -55,3 +55,13 @@
   - `PALABRA RESERVADA -> if/else`
   - `separador -> ; ( ) { }`
 - Salida alineada con las gramáticas libres de contexto definidas en la práctica.
+
+**feat(parser):** validación de estructuras `if-else`
+- Implementación de `verificarIf()`:
+  - Valida la estructura `if (expr relop expr) { INSTRUCCIONES } else { INSTRUCCIONES }`.
+  - Imprime la derivación según la gramática:
+    - `IF -> if (COND) { INSTRUCCIONES } else { INSTRUCCIONES }`
+    - `COND -> expr relop expr`.
+- Recorre el bloque `{}` del `if` y del `else` hasta encontrar `}`.
+- Manejo de múltiples estructuras `if` en el mismo archivo de entrada.
+- Reporta error explícito si la estructura no es válida.
