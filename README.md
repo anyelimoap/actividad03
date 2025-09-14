@@ -38,9 +38,13 @@ El programa lee el archivo `archivo.txt`, separa las palabras y símbolos en tok
 - Antes de imprimir un símbolo, se vacía primero la palabra acumulada.
 - Limpieza de la lógica de acumulación de tokens.
 - Tokens impresos de forma más clara y ordenada.
-
+- Mejoras:
+  - Mayor precisión en la separación de tokens.
+  - Reconocimiento de operadores y delimitadores como entidades independientes.
+  - Código más cercano al funcionamiento de un analizador léxico básico.
   
 ---
+
 
 
 
