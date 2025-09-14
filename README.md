@@ -7,11 +7,10 @@
 - Separar palabras únicamente con el espacio `' '`.
 - Imprimir cada palabra encontrada en consola.
 - Manejo básico de acumulación de caracteres en la variable `palabra`.
-
-**known issues:**
-- No reconoce tabulaciones ni otros tipos de espacio.
-- Los símbolos (`;`, `+`, `=`, `(`, `)`, `{`, `}`) permanecen pegados a las palabras.
-- Funcionalidad limitada como analizador de tokens.
+- Problemas
+  - No reconoce tabulaciones ni otros tipos de espacio.
+  - Los símbolos (`;`, `+`, `=`, `(`, `)`, `{`, `}`) permanecen pegados a las palabras.
+  - Funcionalidad limitada como analizador de tokens.
 
 **feat(tokenizer):** ampliar reconocimiento de espacios en blanco
 - Inclusión de la librería `<cctype>` para usar `isspace()`.
@@ -27,10 +26,18 @@
 - Antes de imprimir un símbolo, se vacía primero la palabra acumulada.
 - Limpieza de la lógica de acumulación de tokens.
 - Tokens impresos de forma más clara y ordenada.
+- Mejoras:
+  - Mayor precisión en la separación de tokens.
+  - Reconocimiento de operadores y delimitadores como entidades independientes.
+  - Código más cercano al funcionamiento de un analizador léxico básico.
 
-**improvements:**
-- Mayor precisión en la separación de tokens.
-- Reconocimiento de operadores y delimitadores como entidades independientes.
-- Código más cercano al funcionamiento de un analizador léxico básico.
-
+**feat(tokenizer):** clasificación avanzada de tokens
+- Se agregó la estructura `Token` con campos `valor` y `tipo`.
+- Implementación de `clasificarToken()`:
+  - Reconoce **tipos** (`int`, `float`, `char`).
+  - Reconoce **palabras reservadas** (`if`, `else`).
+  - Diferencia **números enteros** (`EXPR`).
+  - Soporte para **operadores relacionales** (`=`, `<`, `>`, `==`, `!=`) y aritméticos (`+`, `-`, `*`, `/`) bajo el tipo `RELOP`.
+  - Reconoce **identificadores válidos** (`EXPR`) que empiezan con letra y pueden contener alfanuméricos.
+  - Retorna `DESCONOCIDO` para tokens inválidos.
 
