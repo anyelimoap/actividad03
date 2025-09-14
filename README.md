@@ -52,4 +52,16 @@
 - Simplificación en el main:
   - Ya no se muestran errores genéricos, pues las funciones de parseo se encargan de imprimir el resultado detallado.
   - El bucle principal ahora se detiene simplemente cuando un `parseX` devuelve `false`.
+- Problemas:
+  - Imprime `Token inesperado` dentro de la estructura IF (IF) y las instrucciones (INSTR).
 
+**feat:** agregar soporte para if con else opcional
+- Ampliación de `parseIF`:
+  - Ahora la estructura `if` admite tanto la forma clásica `if (...) { ... } else { ... }` como la versión simplificada `if (...) { ... }` sin bloque `else`.
+  - Se agregó lógica para validar correctamente la ausencia o presencia del else.
+- Validaciones más estrictas:
+  - Se añadió verificación de cierre correcto de llaves (`}`) antes de continuar con el análisis.
+  - Si no se encuentra la llave de cierre, se marca explícitamente como "ESTRUCTURA IF inválida".
+- Mensajes de depuración:
+  - En caso de `if` con `else`, se imprime `ESTRUCTURA IF válida` solo después de procesar ambos bloques correctamente.
+  - En caso de `if` sin `else`, también se confirma con `ESTRUCTURA IF válida`.
