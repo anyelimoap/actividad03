@@ -48,7 +48,6 @@ int main() {
     }
 
     archivo.close();
-<<<<<<< HEAD
     return tokens;
 }
 
@@ -272,8 +271,6 @@ int main() {
             break;
         }
     }
-=======
->>>>>>> aade1f38fbc81993c52a837b022f75c17e746680
     return 0;
 }
 
