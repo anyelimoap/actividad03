@@ -1,6 +1,6 @@
-# 📌 Historial de cambios
+# Historial de cambios
 
-Este proyecto fue desarrollado en equipo a partir de varias versiones. A continuación, se documentan los commits principales siguiendo buenas prácticas de desarrollo de software.
+Esta actividad fue desarrollada en equipo a partir de varias versiones. A continuación, se documentan los commits principales siguiendo buenas prácticas de desarrollo de software.
 
 ---
 
@@ -49,3 +49,4 @@ Se mejoró la robustez del programa al permitir la detección de cualquier tipo 
 - Diferenciar entre **números** e **identificadores**.
 - Ampliar la lista de símbolos soportados.
 - Guardar los tokens en una estructura (`vector` o `lista`) en lugar de imprimirlos directamente.
+
