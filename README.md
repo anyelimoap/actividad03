@@ -46,3 +46,12 @@
 - Función `esOperador()` para `+ - * / = < > !`.
 - Detección de operadores de dos caracteres (`==`, `!=`, `<=`, `>=`) mediante `peek()` en el stream.
 - Almacena separadores con tipo `SEPARADOR`.
+
+**feat(parser):** impresión en formato de gramática
+- Nueva función `imprimirToken()` que traduce los tokens a producciones:
+  - `expr -> valor`
+  - `relop -> valor`
+  - `tipo -> int/float/char`
+  - `PALABRA RESERVADA -> if/else`
+  - `separador -> ; ( ) { }`
+- Salida alineada con las gramáticas libres de contexto definidas en la práctica.
