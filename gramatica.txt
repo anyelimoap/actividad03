@@ -1,5 +1,5 @@
 IF → if (COND) { INSTRUCCIONES } else { INSTRUCCIONES }
-CONT → expr relop expr
+COND → expr relop expr
 relop → < | > | == | !=
 
 DECL → tipo ID = valor ;
@@ -9,3 +9,4 @@ ID → letra (letra | dígito)*
 INSTR → ID = art 
 art → (E | ID) op (E | ID) 
 op → + | - | * | /
+
